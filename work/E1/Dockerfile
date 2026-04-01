@@ -1,8 +1,13 @@
 FROM nginx:alpine 
-# 유닉스의 웹 서버 환경 가저옴
-EXPOSE 80
-# 80번 포트 사용
-CMD ["nginx", "-g", "daemon off;"]
-#유닉스 서버 / 즉시 실행 / 꺼지지않게 유지
 
-#1. docker run hello-world ->
+# 1. app 폴더 '안에 있는 내용물'만 복사하도록 수정
+COPY ./app/ /usr/share/nginx/html/
+
+# 2. Nginx가 파일을 읽을 수 있게 권한 강제 부여
+RUN chmod -R 755 /usr/share/nginx/html
+
+# 2. 포트 설정
+EXPOSE 80
+
+# 3. 마지막에 서버 실행 (CMD는 항상 맨 마지막에!)
+CMD ["nginx", "-g", "daemon off;"]

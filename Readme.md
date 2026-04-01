@@ -60,16 +60,21 @@ Docker version 28.5.2, build ecc6942
 sonjehyun1231743@c5r9s7 Codyssey % mkdir work #work 디렉토리 생성
 sonjehyun1231743@c5r9s7 Codyssey % ls #Codyssey안에 있는 파일이름 확인
 images          Readme.md       txt             work
+
 sonjehyun1231743@c5r9s7 Codyssey % ls -l #파일의 정보 확인
 total 8
 drwxr-xr-x  3 sonjehyun1231743  sonjehyun1231743    96 Apr  1 23:39 images
 -rw-r--r--  1 sonjehyun1231743  sonjehyun1231743  2701 Apr  1 23:52 Readme.md
 drwxr-xr-x  3 sonjehyun1231743  sonjehyun1231743    96 Apr  1 23:42 txt
 drwxr-xr-x  2 sonjehyun1231743  sonjehyun1231743    64 Apr  2 01:32 work
+
 sonjehyun1231743@c5r9s7 Codyssey % cd work #work안으로 들어감
+
 sonjehyun1231743@c5r9s7 work % pwd #work의 절대 주소 확인
 /Users/sonjehyun1231743/Codyssey/work
+
 sonjehyun1231743@c5r9s7 work % cd .. #work의 상위폴더인 Codyssey로 이동
+
 sonjehyun1231743@c5r9s7 Codyssey % pwd #Codyssey의 절대 주소확인
 /Users/sonjehyun1231743/Codyssey
 ```
@@ -79,12 +84,15 @@ sonjehyun1231743@c5r9s7 Codyssey % pwd #Codyssey의 절대 주소확인
 ```bash
 sonjehyun1231743@c5r9s7 E1 % pwd # work에 E1만듬
 /Users/sonjehyun1231743/Codyssey/work/E1
+
 sonjehyun1231743@c5r9s7 E1 % ls -l # D1 D2 D3권환 확인
 total 0
 drwxr-xr-x  2 sonjehyun1231743  sonjehyun1231743  64 Apr  2 01:41 D1
 drwxr-xr-x  2 sonjehyun1231743  sonjehyun1231743  64 Apr  2 01:41 D2
 drwxr-xr-x  2 sonjehyun1231743  sonjehyun1231743  64 Apr  2 01:41 D3
+
 sonjehyun1231743@c5r9s7 E1 % chmod u-r D1 # chmod로 u(User)에게 r(Read)능력을 뻄
+
 sonjehyun1231743@c5r9s7 E1 % ls-l # 띄어쓰기 주의
 zsh: command not found: ls-l
 sonjehyun1231743@c5r9s7 E1 % ls -l #권한 확인
@@ -92,6 +100,7 @@ total 0
 d-wxr-xr-x  2 sonjehyun1231743  sonjehyun1231743  64 Apr  2 01:41 D1 #D1에서 u부분에 r사라진 모습
 drwxr-xr-x  2 sonjehyun1231743  sonjehyun1231743  64 Apr  2 01:41 D2
 drwxr-xr-x  2 sonjehyun1231743  sonjehyun1231743  64 Apr  2 01:41 D3
+
 sonjehyun1231743@c5r9s7 E1 % chmod u+r D1 # chmod로 u(User)에게 r(Read)능력을 다시 넣음
 sonjehyun1231743@c5r9s7 E1 % ls -l
 total 0
@@ -105,6 +114,7 @@ drwxr-xr-x  2 sonjehyun1231743  sonjehyun1231743  64 Apr  2 01:41 D3
 ```bash
 onjehyun1231743@c5r9s7 e1 % docker --version # 도커 유무/버전 확인
 Docker version 28.5.2, build ecc6942
+
 sonjehyun1231743@c5r9s7 e1 % docker info | tail -5 # 도커 상태 리포트
 WARNING: DOCKER_INSECURE_NO_IPTABLES_RAW is set
    Base: 192.168.239.0/24, Size: 24
@@ -115,23 +125,40 @@ WARNING: DOCKER_INSECURE_NO_IPTABLES_RAW is set
 sonjehyun1231743@c5r9s7 e1 % docker images #도커 설계도 목록을 보여줌
 REPOSITORY    TAG       IMAGE ID       CREATED      SIZE
 hello-world   latest    e2ac70e7319a   8 days ago   10.1kB
+
 sonjehyun1231743@c5r9s7 e1 % docker ps -a #현재 만들어진 모든 컨테이너의 상테를 보여줌 (-a == ALL)(아이디/이미지/명령어/생성시점/현재상태/포트/컨테이너 이름)
 CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
 628eae8260a9   hello-world   "/hello"   28 minutes ago   Exited (0) 28 minutes ago             recursing_williamson
-sonjehyun1231743@c5r9s7 e1 % docker logs   #컨테이너 안 모든 로그를 화면에 띄움
-docker: 'docker logs' requires 1 argument
 
-Usage:  docker logs [OPTIONS] CONTAINER
-
-Run 'docker logs --help' for more information #컨테이너가 사용하는 리소스를 실시간 중계
-sonjehyun1231743@c5r9s7 e1 % clear
-CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT   MEM %     NET I/O   BLOCK I/O   PIDS  
+sonjehyun1231743@c5r9s7 e1 % docker logs my-web-container #컨테이너 안 로그를 화면에 띄움
+2026/04/01 18:46:27 [notice] 1#1: start worker process 33
+2026/04/01 18:46:27 [notice] 1#1: start worker process 34
+2026/04/01 18:46:27 [notice] 1#1: start worker process 35
 ```
 
 [v] Dockerfile 기반 웹 서버 컨테이너
-![도커파일](./images/터미널%20기본조작%20및%20폴더구성.png)
+![도커파일](./images/Dockerfile.png)
 ```bash
+pico Dockerfile #pico를 이용해서 Dokerfile생성/열기
 
+ #------------------ Dakerfile -------------------
+FROM nginx:alpine  # 0. Nginx 화면을 내화면으로 덮어쓰기
+COPY ./app/ /usr/share/nginx/html/ # 1. app 폴더 '안에 있는 내용물'만 복사하도록 수정
+RUN chmod -R 755 /usr/share/nginx/html # 2. Nginx가 파일을 읽을 수 있게 권한 강제 부여
+EXPOSE 80 # 3. 포트 설정(컨테이너가 사용할 포트)
+CMD ["nginx", "-g", "daemon off;"] # 4. 마지막에 서버 실행 (CMD는 항상 맨 마지막에!)
+#-------------------------------------------------
+
+sonjehyun1231743@c5r9s7 E1 % cat Dockerfile #Dockerfile 파일을 미리 볼 수 있음
+
+app만들기 -> pico app/index.html 생성 -> html작성 -> 
+
+docker build -t my-web-image . # 이미지 빌드
+
+docker run -d -p 8080:80 --name my-web-container my-web-image #컨테이너 실행(컨테이너? => 독립된 주택//내 컴퓨터에 있지만 운영체제,웹서버, 코드 따로 분리되어있음) //8080:80의 의미 내 컴퓨터가 8080문을 열면 컨테이너가 80번 문으로 연결
+
+# 브라우저에 localhost:8080 입력
+docker rm -f my-web-container #다보면 컨테이너를 지움 (1.이름충돌 //Dockerfile 수정 -> 이전 컨테이너가 자리를 차지 2. 불변성 아끼기 //도커==수정하지말고 새로만들어서 써라 )
 ```
 
 [v] 포트 매핑을 통한 브라우저 접속 확인(2회)
