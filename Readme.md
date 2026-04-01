@@ -47,10 +47,11 @@ sonjehyun1231743@c5r9s7 Codyssey % echo $SHELL
 sonjehyun1231743@c5r9s7 Codyssey % docker --version
 Docker version 28.5.2, build ecc6942
 ```
-    - OS:       macOS 15.7.4                        // sw_vers && sysctl -n machdep.cpu.brand_string
-    - Shell:    /bin/zsh                            // echo $SHELL
-    - Docker:   ocker version 28.5.2, build ecc6942 // docker --version
-    - Git:      git version 2.53.0                  // git --version
+
+    ####- OS:       macOS 15.7.4                        // sw_vers && sysctl -n machdep.cpu.brand_string
+        - Shell:    /bin/zsh                            // echo $SHELL
+        - Docker:   ocker version 28.5.2, build ecc6942 // docker --version
+        - Git:      git version 2.53.0                  // git --version
 
 
 ### 수행 항목 체크리스트(터미널/권한/Docker/Dockerfile/포트/볼륨/Git/GitHub)
@@ -162,14 +163,15 @@ docker rm -f my-web-container #다보면 컨테이너를 지움 (1.이름충돌 
 ```
 
 [v] 바인드 마운트 반영 + 볼륨 영속성 증거
-![바인드마운트](./images/Volume.png)
+![바인드마운트](./images/Baind.png)
 ![볼륨영속성](./images/Volume.png)
 ```bash
 ##바인드 마운트 반영 //**바인드 마운트** 호스트에 있는 실제 특정 폴더(A)를 도커 컨테이너 내부의 폴더(B)와 실시간으로 동기화
 # 현재 경로($PWD)의 app 폴더를 컨테이너의 html 폴더에 바인드 마운트
-docker run -d -p 8081:80 \
-  -v "$(pwd)/app:/usr/share/nginx/html" \
-  --name bind-test-container my-web-image
+docker run -d -p 8081:80 \  #0881포트로 작성
+  -v "$(pwd)/app:/usr/share/nginx/html" \  #E1안 app : /nginx/html 컨테이너 내부에서 웹파일이 위치하는 절대!경로
+  --name bind-test-container my-web-image 
+#localhost:8081 들어가서 8080:80이랑 같은거 확인
 
 ##볼륨 생성 - 데이터 영속성(데이터 유지)
 docker volume create my-db-data #1. 볼륨 생성
@@ -193,11 +195,11 @@ docker run -d -p 8083:80 -v my-db-data:/usr/share/nginx/html --name new-volume-t
 ### 검증 방법(어떤 명령으로 무엇을 확인했는지) + 결과 위치 링크
     - 결과 위치 링크 방법: ![설명](이미지.png)
 ### 트러블슈팅 2건 이상(문제 → 원인 가설 → 확인 → 해결/대안)
-    **문제**        1. 
-    **원인/가설**    
-    **확인**        
-    **해결/대안**
-    (확인 -> 문제해결 실패-> 다시 원인/가설)
+    (1)  **문제**       도커파일이 사파리에서 읽혀들지않음.
+         **원인/가설**    권한부족?
+         **확인**        nginx에게 755의 권한을 강제로 부여 User: rwx / Gurpe: r-x / Others: r-x 
+         **해결/대안**    시크릿 모드에서도 실행 가능!
+         (확인 -> 문제해결 실패-> 다시 원인/가설)
 ### 기술 문서만 읽어도 전체 수행 내용 파악 가능
     **목표**
     **환경**    
