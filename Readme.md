@@ -136,7 +136,7 @@ sonjehyun1231743@c5r9s7 e1 % docker logs my-web-container #컨테이너 안 로�
 2026/04/01 18:46:27 [notice] 1#1: start worker process 35
 ```
 
-[v] Dockerfile 기반 웹 서버 컨테이너
+[v] Dockerfile 기반 웹 서버 컨테이너 / 포트매핑
 ![도커파일](./images/Dockerfile.png)
 ```bash
 pico Dockerfile #pico를 이용해서 Dokerfile생성/열기
@@ -161,16 +161,28 @@ docker run -d -p 8080:80 --name my-web-container my-web-image #컨테이너 실�
 docker rm -f my-web-container #다보면 컨테이너를 지움 (1.이름충돌 //Dockerfile 수정 -> 이전 컨테이너가 자리를 차지 2. 불변성 아끼기 //도커==수정하지말고 새로만들어서 써라 )
 ```
 
-[v] 포트 매핑을 통한 브라우저 접속 확인(2회)
-![포트](./images/터미널%20기본조작%20및%20폴더구성.png)
+[v] 바인드 마운트 반영 + 볼륨 영속성 증거
+![바인드마운트](./images/Volume.png)
+![볼륨영속성](./images/Volume.png)
 ```bash
+##바인드 마운트 반영 //**바인드 마운트** 호스트에 있는 실제 특정 폴더(A)를 도커 컨테이너 내부의 폴더(B)와 실시간으로 동기화
+# 현재 경로($PWD)의 app 폴더를 컨테이너의 html 폴더에 바인드 마운트
+docker run -d -p 8081:80 \
+  -v "$(pwd)/app:/usr/share/nginx/html" \
+  --name bind-test-container my-web-image
 
-```
+##볼륨 생성 - 데이터 영속성(데이터 유지)
+docker volume create my-db-data #1. 볼륨 생성
 
-[v] Docker 볼륨을 이용한 데이터 영속성 검증
-![볼륨](./images/터미널%20기본조작%20및%20폴더구성.png)
-```bash
+docker run -d -p 8082:80 \  #포트 8082:80
+    -v my-db-data:/usr/share/nginx/html \ 
+  --name volume-test-container logo.png # 2. 볼륨 연결하여 테스트 컨테이너 실행 # -v는 볼륨의 약자 
 
+docker exec volume-test-container sh -c "echo '<h1>Volume Persistence Success!</h1>' > /usr/share/nginx/html/index.html"
+# 3. 테스트 볼륨에 새 정보 입력 4. localhost:8082에서 확인
+docker rm -f volume-test-container # 5. 테스트 볼륨 삭제
+docker run -d -p 8083:80 -v my-db-data:/usr/share/nginx/html --name new-volume-test logo.png # 6. 8083:80포트로 새 컨테이너 생성(볼륨 동일!!!**중요)
+# localhost:8083에서 확인 가능ß
 ```
 
 [v] Git 설정 및 GitHub 저장소 연동 완료
@@ -181,7 +193,7 @@ docker rm -f my-web-container #다보면 컨테이너를 지움 (1.이름충돌 
 ### 검증 방법(어떤 명령으로 무엇을 확인했는지) + 결과 위치 링크
     - 결과 위치 링크 방법: ![설명](이미지.png)
 ### 트러블슈팅 2건 이상(문제 → 원인 가설 → 확인 → 해결/대안)
-    **문제**        
+    **문제**        1. 
     **원인/가설**    
     **확인**        
     **해결/대안**
