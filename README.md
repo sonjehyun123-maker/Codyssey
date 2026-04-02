@@ -72,7 +72,7 @@ drwxr-xr-x  2 sonjehyun1231743  sonjehyun1231743    64 Apr  2 01:32 work
 sonjehyun1231743@c5r9s7 Codyssey % cd work #work안으로 들어감
 
 sonjehyun1231743@c5r9s7 work % pwd #work의 절대 주소 확인
-/Users/sonjehyun1231743/Codyssey/work
+/Users/sonjehyun1231743/Codyssey/work #절대주소
 
 sonjehyun1231743@c5r9s7 work % cd .. #work의 상위폴더인 Codyssey로 이동
 
@@ -138,11 +138,12 @@ sonjehyun1231743@c5r9s7 e1 % docker logs my-web-container #컨테이너 안 로�
 ```
 
 [v] Dockerfile 기반 웹 서버 컨테이너 / 포트매핑
+
 ![도커파일](./images/Dockerfile.png)
 ```bash
 pico Dockerfile #pico를 이용해서 Dokerfile생성/열기
 
- #------------------ Dakerfile -------------------
+#------------------ Dakerfile -------------------
 FROM nginx:alpine  # 0. Nginx 화면을 내화면으로 덮어쓰기
 COPY ./app/ /usr/share/nginx/html/ # 1. app 폴더 '안에 있는 내용물'만 복사하도록 수정
 RUN chmod -R 755 /usr/share/nginx/html # 2. Nginx가 파일을 읽을 수 있게 권한 강제 부여
@@ -156,11 +157,43 @@ app만들기 -> pico app/index.html 생성 -> html작성 ->
 
 docker build -t my-web-image . # 이미지 빌드
 
-docker run -d -p 8080:80 --name my-web-container my-web-image #컨테이너 실행(컨테이너? => 독립된 주택//내 컴퓨터에 있지만 운영체제,웹서버, 코드 따로 분리되어있음) //8080:80의 의미 내 컴퓨터가 8080문을 열면 컨테이너가 80번 문으로 연결
+docker run -d -p 8080:80 --name my-web-container my-web-image #컨테이너 생성(컨테이너? => 독립된 주택//내 컴퓨터에 있지만 운영체제,웹서버, 코드 따로 분리되어있음) //8080:80의 의미 내 컴퓨터가 8080문을 열면 컨테이너가 80번 문으로 연결
+
+### 포트 충돌 문제 진단 순서
+  1. 현재 포트를 사용하는 프로세스 확인
+    - macOS/Linux: lsof -i :포트번호
+    - 예: lsof -i :8080
+  2. Docker 컨테이너 사용 여부 확인
+    - docker ps
+    - 이미 실행 중인 컨테이너가 해당 포트를 점유 중인지 확인
+  3. 모든 컨테이너 확인 (중지 상태 포함)
+    - docker ps -a
+    - 이전에 생성된 컨테이너가 남아있는지 확인
+  4. 문제 원인에 따른 해결
+    - 기존 컨테이너 종료: docker stop 컨테이너명
+    - 컨테이너 삭제: docker rm -f 컨테이너명
+    - 다른 포트로 변경: -p 8081:80
+  정리: 포트 확인 - 포트 사용, 충돌하는       컨테이너 - 중지, 삭제, 포트변경
 
 # 브라우저에 localhost:8080 입력
 docker rm -f my-web-container #다보면 컨테이너를 지움 (1.이름충돌 //Dockerfile 수정 -> 이전 컨테이너가 자리를 차지 2. 불변성 아끼기 //도커==수정하지말고 새로만들어서 써라 )
+
 ```
+
+#### [v] 이미지 vs 컨테이너
+  이미지 = 변하지 않는 설계도  //Dockerfile로 빌드해서 생성
+  컨테이너 = 실행되는 실체 (일시적,독립적) //이미지를 기반으로 돌아가는 프로세스
+  - 빌드(Build)
+    - 이미지: Dockerfile을 기반으로 생성되는 “설계도”
+    - 컨테이너: 이미지를 기반으로 생성되는 실행 인스턴스 (빌드 대상 아님)
+  - 실행(Run)
+    - 이미지: 실행되지 않음 (정적 상태)
+    - 컨테이너: 이미지를 기반으로 실제 실행되는 프로세스
+  - 변경(Change)
+    - 이미지: 변경 불가능 → 수정 시 재빌드 필요
+    - 컨테이너: 실행 중 변경 가능 → 삭제 시 변경 내용 사라짐
+
+  이미지 생성(build)-> 그 이미지를 기반으로 컨테이너를 생성/실행(run)
 
 [v] 바인드 마운트 반영 + 볼륨 영속성 증거
 ![바인드마운트](./images/Baind.png)
@@ -168,11 +201,12 @@ docker rm -f my-web-container #다보면 컨테이너를 지움 (1.이름충돌 
 ```bash
 ##바인드 마운트 반영 //**바인드 마운트** 호스트에 있는 실제 특정 폴더(A)를 도커 컨테이너 내부의 폴더(B)와 실시간으로 동기화
 # 현재 경로($PWD)의 app 폴더를 컨테이너의 html 폴더에 바인드 마운트
-docker run -d -p 8081:80 \  #0881포트로 작성
+docker run -d -p 8081:80 \  0881포트로 작성
   -v "$(pwd)/app:/usr/share/nginx/html" \  #E1안 app : /nginx/html 컨테이너 내부에서 웹파일이 위치하는 절대!경로
   --name bind-test-container my-web-image 
 #localhost:8081 들어가서 8080:80이랑 같은거 확인
-
+$(pwd) → 절대경로
+./app → 상대경로 비교
 ##볼륨 생성 - 데이터 영속성(데이터 유지)
 docker volume create my-db-data #1. 볼륨 생성
 
@@ -192,6 +226,7 @@ docker run -d -p 8083:80 -v my-db-data:/usr/share/nginx/html --name new-volume-t
 ```bash
 
 ```
+
 ### 검증 방법(어떤 명령으로 무엇을 확인했는지) + 결과 위치 링크
     - 결과 위치 링크 방법: ![설명](이미지.png)
 ### 트러블슈팅 2건 이상(문제 → 원인 가설 → 확인 → 해결/대안)
