@@ -113,6 +113,7 @@ drwxr-xr-x  2 sonjehyun1231743  sonjehyun1231743  64 Apr  2 01:41 D3
 
 [v] Docker 설치 및 환경 점검 (docker info)
 ![도커](./images/docker.png)
+![hello-wolrd](./images/Docker-hello-world.png)
 ```bash
 onjehyun1231743@c5r9s7 e1 % docker --version # 도커 유무/버전 확인
 Docker version 28.5.2, build ecc6942
