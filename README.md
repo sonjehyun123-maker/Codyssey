@@ -56,7 +56,7 @@ Docker version 28.5.2, build ecc6942
 
 
 ### 수행 항목 체크리스트(터미널/권한/Docker/Dockerfile/포트/볼륨/Git/GitHub)
-[v] 터미널 기본 조작 및 폴더 구성 (mkdir, ls, cd)
+[v] 터미널 기본 조작 및 폴더 구성 (mkdir, ls, cd, rm)
 ![터미널](./images/터미널%20기본조작%20및%20폴더구성.png)
 ```bash
 sonjehyun1231743@c5r9s7 Codyssey % mkdir work #work 디렉토리 생성
@@ -71,13 +71,11 @@ drwxr-xr-x  3 sonjehyun1231743  sonjehyun1231743    96 Apr  1 23:42 txt
 drwxr-xr-x  2 sonjehyun1231743  sonjehyun1231743    64 Apr  2 01:32 work
 
 sonjehyun1231743@c5r9s7 Codyssey % cd work #work안으로 들어감
-
-sonjehyun1231743@c5r9s7 work % pwd #work의 절대 주소 확인
-/Users/sonjehyun1231743/Codyssey/work #절대주소
-
+sonjehyun1231743@c5r9s7 work % pwd #work의 절대경로 확인
+/Users/sonjehyun1231743/Codyssey/work #절대경로
 sonjehyun1231743@c5r9s7 work % cd .. #work의 상위폴더인 Codyssey로 이동
-
-sonjehyun1231743@c5r9s7 Codyssey % pwd #Codyssey의 절대 주소확인
+sonjehyun1231743@c5r9s7 Codyssey % pwd #Codyssey의 절대경로 확인
+sonjehyun1231743@c5r9s7 Codyssey % rm -r work
 /Users/sonjehyun1231743/Codyssey
 ```
 
@@ -160,6 +158,8 @@ app만들기 -> pico app/index.html 생성 -> html작성 ->
 docker build -t my-web-image . # 이미지 빌드
 
 docker run -d -p 8080:80 --name my-web-container my-web-image #컨테이너 생성(컨테이너? => 독립된 주택//내 컴퓨터에 있지만 운영체제,웹서버, 코드 따로 분리되어있음) //8080:80의 의미 내 컴퓨터가 8080문을 열면 컨테이너가 80번 문으로 연결
+#컨테이너와 호스트의 위치는 os 위에 os를 올린 형식 이여서 서로 연결 할 수 없고 . 연결 하기 위해서는 호스트포트와 컨테이너 포트 80을 맞춰 주어야 한다.
+curl localhost:8080 
 
 ### 포트 충돌 문제 진단 순서
   1. 현재 포트를 사용하는 프로세스 확인
@@ -197,6 +197,37 @@ docker rm -f my-web-container #다보면 컨테이너를 지움 (1.이름충돌 
 
   이미지 생성(build)-> 그 이미지를 기반으로 컨테이너를 생성/실행(run)
 
+
+////////
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, nginx is successfully installed and working.
+Further configuration is required for the web server, reverse proxy, 
+API gateway, load balancer, content cache, or other features.</p>
+
+<p>For online documentation and support please refer to
+<a href="https://nginx.org/">nginx.org</a>.<br/>
+To engage with the community please visit
+<a href="https://community.nginx.org/">community.nginx.org</a>.<br/>
+For enterprise grade support, professional services, additional 
+security features and capabilities please refer to
+<a href="https://f5.com/nginx">f5.com/nginx</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+.////////
+
 [v] 바인드 마운트 반영 + 볼륨 영속성 증거
 ![바인드마운트](./images/Baind.png)
 ![볼륨영속성](./images/Volume.png)
@@ -207,8 +238,9 @@ docker run -d -p 8081:80 \  0881포트로 작성
   -v "$(pwd)/app:/usr/share/nginx/html" \  #E1안 app : /nginx/html 컨테이너 내부에서 웹파일이 위치하는 절대!경로
   --name bind-test-container my-web-image 
 #localhost:8081 들어가서 8080:80이랑 같은거 확인
-$(pwd) → 절대경로
-./app → 상대경로 비교
+$(pwd) → 절대경로 : root부터 파일 위치 까지 전부다 출력
+./app → 상대경로 : 현재 디렉토리 위치에 상대한 파일의 위치
+
 ##볼륨 생성 - 데이터 영속성(데이터 유지)
 docker volume create my-db-data #1. 볼륨 생성
 
@@ -229,16 +261,24 @@ docker run -d -p 8083:80 -v my-db-data:/usr/share/nginx/html --name new-volume-t
 
 ```
 
+[v] 포트 매핑 및 볼륨 마운트 명령어
+-p : 포트 (포트번호)
+-v : 볼륨 (볼륨이름)
+
+[v] 디렉토리
+image : 캡쳐 저장 공간
+work : 실행 공간
+README.md : 문서
+
 ### 검증 방법(어떤 명령으로 무엇을 확인했는지) + 결과 위치 링크
     - 결과 위치 링크 방법: ![설명](이미지.png)
 ### 트러블슈팅 2건 이상(문제 → 원인 가설 → 확인 → 해결/대안)
-    (1)  **문제**       도커파일이 사파리에서 읽혀들지않음.
-         **원인/가설**    권한부족?
-         **확인**        nginx에게 755의 권한을 강제로 부여 User: rwx / Gurpe: r-x / Others: r-x 
-         **해결/대안**    시크릿 모드에서도 실행 가능!
-         (확인 -> 문제해결 실패-> 다시 원인/가설)
-### 기술 문서만 읽어도 전체 수행 내용 파악 가능
-    **목표**
-    **환경**    
-    **과정**
-    **결과**
+   1. 실행 안 된 컨테이너 exec 시도
+    증상: container is not running
+    상황: 실행중이 아닌 컨테이너에 들어갈려고 함 
+    해결: docker start 하거나 새로 실행
+
+    2. Dockerfile 못 찾음
+    증상: no such file or directory
+    원인: 현재 경로에 Dockerfile 없음
+    해결: ls로 위치 확인 후 해당 폴더에서 build
