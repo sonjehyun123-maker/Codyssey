@@ -109,6 +109,11 @@ drwxr-xr-x  2 sonjehyun1231743  sonjehyun1231743  64 Apr  2 01:41 D2
 drwxr-xr-x  2 sonjehyun1231743  sonjehyun1231743  64 Apr  2 01:41 D3
 ```
 
+     U   G   O
+777 rwx rwx rwx // r:2^2 w:2^1 x:2^0
+122 --x -x- -x-
+655 rw- r-x r-x
+
 [v] Docker 설치 및 환경 점검 (docker info)
 ![도커](./images/docker.png)
 ![hello-wolrd](./images/Docker-hello-world.png)
@@ -238,8 +243,10 @@ docker run -d -p 8081:80 \  0881포트로 작성
   -v "$(pwd)/app:/usr/share/nginx/html" \  #E1안 app : /nginx/html 컨테이너 내부에서 웹파일이 위치하는 절대!경로
   --name bind-test-container my-web-image 
 #localhost:8081 들어가서 8080:80이랑 같은거 확인
-$(pwd) → 절대경로 : root부터 파일 위치 까지 전부다 출력
+$(pwd) → 절대경로 : root부터 파일 위치 까지 전부다 출력 
 ./app → 상대경로 : 현재 디렉토리 위치에 상대한 파일의 위치
+ 선택 | 절대경로: 현재 들어가 있는 디렉토리 위치를 모를떄
+      상대경로 : 현재 디렉토리 위치도 알고 이 위치에 따른 불러오고싶은 파일/디렉토리 위치를 알 떄
 
 ##볼륨 생성 - 데이터 영속성(데이터 유지)
 docker volume create my-db-data #1. 볼륨 생성
@@ -269,6 +276,9 @@ docker run -d -p 8083:80 -v my-db-data:/usr/share/nginx/html --name new-volume-t
 image : 캡쳐 저장 공간
 work : 실행 공간
 README.md : 문서
+
+
+
 
 ### 검증 방법(어떤 명령으로 무엇을 확인했는지) + 결과 위치 링크
     - 결과 위치 링크 방법: ![설명](이미지.png)
