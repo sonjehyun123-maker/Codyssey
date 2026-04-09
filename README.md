@@ -145,9 +145,19 @@ sonjehyun1231743@c5r9s7 e1 % docker logs my-web-container #컨테이너 안 로�
 [v] Dockerfile 기반 웹 서버 컨테이너 / 포트매핑
 
 ![도커파일](./images/Dockerfile.png)
+
+  - 컨테이너 종료/유지(attach/exec)의 차이
+    - attach
+      - 개념: 메인 프로세스 연결 
+      - 프로세스: 메인 프로세스와 입/출력 공유
+      - 종료 영향: 컨테이너가 종료됨
+
+    - exec
+      - 개념: 컨테이너에 새로운 프로세스 실행
+      - 프로세스: 별도 프로세스로 동작
+      - 종료 영향: exit 해도 컨테이너 유지
 ```bash
 pico Dockerfile #pico를 이용해서 Dokerfile생성/열기
-
 #------------------ Dakerfile -------------------
 FROM nginx:alpine  # 0. Nginx 화면을 내화면으로 덮어쓰기
 COPY ./app/ /usr/share/nginx/html/ # 1. app 폴더 '안에 있는 내용물'만 복사하도록 수정
